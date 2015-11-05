@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Guestbook;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -17,9 +16,11 @@ class GuestbookController extends Controller
      */
     public function index()
     {
-        $entries = Guestbook::orderBy('created_at', 'desc')->get();
+        $entries = Guestbook::all();
+        return view('guestbook.index', compact('entries'));
 
-        return view('guestbook.index', ['entries' => $entries]);
+//        $entries = Guestbook::orderBy('created_at', 'desc')->get();
+//        return view('guestbook.index', ['entries' => $entries]);
     }
 
     /**
@@ -29,7 +30,7 @@ class GuestbookController extends Controller
      */
     public function create()
     {
-        //
+        return view('guestbook.create');
     }
 
     /**
@@ -67,7 +68,13 @@ class GuestbookController extends Controller
      */
     public function edit($id)
     {
-        //
+        $entries = Guestbook::findOrFail($id);
+        $data = ['id' => $id];
+        foreach (array_keys($this->fields) as $field) {
+            $data[$field] = old($field, $entries->$field);
+        }
+        var_dump($data);
+        return view('guestbook.edit', $data);
     }
 
     /**
@@ -90,6 +97,8 @@ class GuestbookController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $entries = Guestbook::findOrFail($id);
+        $entries->delete();
+        return redirect('guestbook')->withSuccess("The '$entries->entries' tag has been deleted.");
     }
 }

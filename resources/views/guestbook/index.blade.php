@@ -1,18 +1,21 @@
-<h1>Hello World</h1>
+@extends('app')
 
-<ul>
-    @foreach ($entries as $entry)
-    <li>{{ $entry->name }}: {{ $entry->content }}</li>
+@section('content')
+
+    @include('guestbook.create')
+    <hr />
+    @foreach($entries as $entry)
+        <blockquote>
+            <p>{{ $entry->content }}</p>
+            <footer>Name: <cite title="Source Title">{{ $entry->name }}</cite></footer>
+            <a href="guestbook/{{ $entry->id }}/edit"
+               class="btn btn-xs btn-info">
+                <i class="fa fa-edit"></i> Edit
+            </a>
+            <a href="#"
+               class="btn btn-xs btn-danger">
+                <i class="fa fa-edit"></i> Delete
+            </a>
+        </blockquote>
     @endforeach
-</ul>
-
-<form method="post" action="{{ route('guestbook.store') }}">
-    {!! csrf_field() !!}
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name">
-
-    <label for="content">Message</label>
-    <textarea name="content" id="content"></textarea>
-
-    <input type="submit" value="Post" id="post">
-</form>
+@stop
