@@ -2,20 +2,21 @@
 
 @section('content')
 
+    @include('errors.list')
+    @include('partials.success')
     @include('guestbook.create')
+
     <hr />
     @foreach($entries as $entry)
         <blockquote>
-            <p>{{ $entry->content }}</p>
-            <footer>Name: <cite title="Source Title">{{ $entry->name }}</cite></footer>
-            <a href="guestbook/{{ $entry->id }}/edit"
-               class="btn btn-xs btn-info">
+            <p><a href="{{action('GuestbookController@show', [$entry->id])}}">{{ $entry->content }}</a></p>
+            <footer>Posted on {{ $entry->created_at->format('F j, Y') }} by <cite title="Source Title">{{ $entry->name }}</cite></footer>
+            <a href="guestbook/{{ $entry->id }}/edit" class="btn btn-xs btn-info">
                 <i class="fa fa-edit"></i> Edit
             </a>
-            <a href="#"
-               class="btn btn-xs btn-danger">
+            <a href="{{action('GuestbookController', [$entry->id])}}" class="btn btn-xs btn-danger">
                 <i class="fa fa-edit"></i> Delete
             </a>
         </blockquote>
     @endforeach
-@stop
+@endsection

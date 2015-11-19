@@ -1,7 +1,7 @@
 <?php
 
 Route::get('/', function () {
-    return redirect('/guestbook');
+    return redirect('guestbook');
 });
 
-Route::resource('/guestbook', 'GuestbookController');
+Route::resource('guestbook', 'GuestbookController');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GuestbookRequest;
 use Illuminate\Http\Request;
 use App\Guestbook;
 use App\Http\Requests;
@@ -16,11 +17,8 @@ class GuestbookController extends Controller
      */
     public function index()
     {
-        $entries = Guestbook::all();
+        $entries = Guestbook::orderBy('created_at', 'desc')->get();
         return view('guestbook.index', compact('entries'));
-
-//        $entries = Guestbook::orderBy('created_at', 'desc')->get();
-//        return view('guestbook.index', ['entries' => $entries]);
     }
 
     /**
@@ -36,17 +34,13 @@ class GuestbookController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param GuestbookRequest|Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(GuestbookRequest $request)
     {
-        $guestbook = Guestbook::create([
-            'name' => $request->name, 
-            'content' => $request->content
-        ]);
-
-        return redirect()->to('guestbook');
+        Guestbook::create($request->all());
+        return redirect('guestbook')->withSuccess('New Messages Successfully Created.');;
     }
 
     /**
@@ -57,7 +51,8 @@ class GuestbookController extends Controller
      */
     public function show($id)
     {
-        //
+        $entries = Guestbook::findOrFail($id);
+        return view('guestbook.show', compact('entries'));
     }
 
     /**
@@ -68,13 +63,13 @@ class GuestbookController extends Controller
      */
     public function edit($id)
     {
-        $entries = Guestbook::findOrFail($id);
-        $data = ['id' => $id];
-        foreach (array_keys($this->fields) as $field) {
-            $data[$field] = old($field, $entries->$field);
-        }
-        var_dump($data);
-        return view('guestbook.edit', $data);
+//        $entries = Guestbook::findOrFail($id);
+//        $data = ['id' => $id];
+//        foreach (array_keys($this->fields) as $field) {
+//            $data[$field] = old($field, $entries->$field);
+//        }
+//        var_dump($data);
+//        return view('guestbook.edit', $data);
     }
 
     /**
@@ -99,6 +94,8 @@ class GuestbookController extends Controller
     {
         $entries = Guestbook::findOrFail($id);
         $entries->delete();
-        return redirect('guestbook')->withSuccess("The '$entries->entries' tag has been deleted.");
+        return redirect()
+            ->route('guestbook.index')
+            ->withSuccess("The '$entries->entries' tag has been deleted.");
     }
 }

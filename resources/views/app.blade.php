@@ -21,6 +21,11 @@
         </div>
 
         <script src="{{ asset('assets/js/app.js') }}"></script>
+
+        <script>
+            $('div.alert').not('.alert-important').delay(3000).slideUp(400);
+        </script>
+
         @yield('scripts')
 
     </body>
